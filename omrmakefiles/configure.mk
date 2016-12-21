@@ -108,6 +108,7 @@ OMRTHREAD_LIB_ZOS := 0
 #zg. Trying to using the glue in som++
 #OMRGLUE ?= $(filter /%,./example/glue)$(addprefix $(top_srcdir)/,$(filter-out /%,./example/glue))
 OMRGLUE ?= $(filter /%,./../som++/src/somrvm)$(addprefix $(top_srcdir)/,$(filter-out /%,./../som++/src/somrvm))
+SOM_HEADS= $(filter /%,./../som++/src/vmobjects)$(addprefix $(top_srcdir)/,$(filter-out /%,./../som++/src/vmobjects))
 
 OMR_CROSS_COMPILE := 0
 
@@ -127,7 +128,7 @@ LDFLAGS :=
 OMRGLUE_CPPFLAGS := 
 OMRGLUE_CFLAGS := 
 OMRGLUE_CXXFLAGS := 
-OMRGLUE_INCLUDES := $(OMRGLUE) $(filter /%,) $(addprefix $(top_srcdir)/,$(filter-out /%,))
+OMRGLUE_INCLUDES := $(OMRGLUE) $(SOM_HEADS) $(filter /%,) $(addprefix $(top_srcdir)/,$(filter-out /%,))
 
 # GNU make provides a default value for ARFLAGS. We want to override it with our own value.
 ARFLAGS = 
