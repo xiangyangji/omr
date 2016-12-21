@@ -2332,9 +2332,7 @@ MM_ConcurrentGC::concurrentSweep(MM_EnvironmentStandard *env, MM_MemorySubSpace 
 	((MM_ConcurrentSweepScheme *)_sweepScheme)->payAllocationTax(env, subspace, allocDescription);
 	env->popVMstate(oldVMstate);
 }
-#endif /* OMR_GC_CONCURRENT_SWEEP */
 
-#if defined(OMR_GC_CONCURRENT_SWEEP)
 /**
  * Finish all concurrent sweep activities.
  *
@@ -2358,9 +2356,7 @@ MM_ConcurrentGC::completeConcurrentSweep(MM_EnvironmentStandard *env)
 
 	concurrentSweep->completeSweep(env, ABOUT_TO_GC);
 }
-#endif /* OMR_GC_CONCURRENT_SWEEP */
 
-#if defined(OMR_GC_CONCURRENT_SWEEP)
 /**
  * Finish all concurrent sweep activities.
  */

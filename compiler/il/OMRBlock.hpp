@@ -154,7 +154,8 @@ class OMR_EXTENSIBLE Block : public TR::CFGNode
    // preppend a node under a treetop immediately after the bbStart
    TR::TreeTop * prepend(TR::TreeTop * tt);
 
-   TR::Block * split(TR::TreeTop * startOfNewBlock,  TR::CFG * cfg, bool fixupCommoning = false, bool copyExceptionSuccessors = true);
+   TR::Block * split(TR::TreeTop * startOfNewBlock,  TR::CFG * cfg, bool fixupCommoning = false, bool copyExceptionSuccessors = true, TR::ResolvedMethodSymbol *methodSymbol = NULL);
+   TR::Block * splitWithGivenMethodSymbol(TR::ResolvedMethodSymbol *methodSymbol, TR::TreeTop * startOfNewBlock,  TR::CFG * cfg, bool fixupCommoning = false, bool copyExceptionSuccessors = true);
 
    TR::Block *createConditionalSideExitBeforeTree(TR::TreeTop *tree,
                                                   TR::TreeTop *compareTree,
@@ -469,7 +470,7 @@ class OMR_EXTENSIBLE Block : public TR::CFGNode
 
    private:
 
-   void uncommonNodesBetweenBlocks(TR::Compilation *, TR::Block *);
+   void uncommonNodesBetweenBlocks(TR::Compilation *, TR::Block *, TR::ResolvedMethodSymbol *methodSymbol = NULL);
 
    TR::Block * splitBlockAndAddConditional(TR::TreeTop *tree,
                                            TR::TreeTop *compareTree,
@@ -507,12 +508,6 @@ class OMR_EXTENSIBLE Block : public TR::CFGNode
       _hasCalls                             = 0x00200000,
       _hasCallToSuperCold                   = 0x00400000,
       _isSpecialized                        = 0x00800000   // Block has been specialized by loop specializer
-      };
-
-   enum //  flag bits for _moreflags
-      {
-      // lowest 8 bits are used for partial flags. Public declaration above.
-
       };
 
    TR::TreeTop *                         _pEntry;

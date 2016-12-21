@@ -237,6 +237,8 @@ struct TR_X86ProcessorInfo
    bool supportsSFence()                   {return _featureFlags.testAny(TR_SSE | TR_MMXInstructions);}
    bool prefersMultiByteNOP()              {return getX86Architecture() && isGenuineIntel() && !isIntelPentium();}
 
+   bool supportsAtomicAdd()                {return true;} //we have common helpers for atomic primitives
+
    uint32_t getCPUStepping(uint32_t signature)       {return (signature & CPUID_SIGNATURE_STEPPING_MASK);}
    uint32_t getCPUModel(uint32_t signature)          {return (signature & CPUID_SIGNATURE_MODEL_MASK) >> 4;}
    uint32_t getCPUFamily(uint32_t signature)         {return (signature & CPUID_SIGNATURE_FAMILY_MASK) >> 8;}
@@ -351,6 +353,7 @@ class OMR_EXTENSIBLE CodeGenerator : public OMR::CodeGenerator
    bool hasComplexAddressingMode() { return true; }
    bool getSupportsBitOpCodes() { return true; }
 
+   bool getSupportsOpCodeForAutoSIMD(TR::ILOpCode, TR::DataType);
    bool getSupportsEncodeUtf16LittleWithSurrogateTest();
    bool getSupportsEncodeUtf16BigWithSurrogateTest();
 
@@ -616,6 +619,8 @@ class OMR_EXTENSIBLE CodeGenerator : public OMR::CodeGenerator
    virtual TR_BitVector *getGlobalRegisters(TR_SpillKinds kind, TR_LinkageConventions lc){ return &_globalRegisterBitVectors[kind]; }
 
    virtual void simulateNodeEvaluation (TR::Node *node, TR_RegisterPressureState *state, TR_RegisterPressureSummary *summary);
+
+   bool isFPRUsedAsVRF() { return _targetProcessorInfo.supportsSSE2(); }
 
    protected:
 

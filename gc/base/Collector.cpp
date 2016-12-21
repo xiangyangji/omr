@@ -16,14 +16,14 @@
  *    Multiple authors (IBM Corp.) - initial implementation and documentation
  ******************************************************************************/
 
+#include "AllocateDescription.hpp"
 #include "Collector.hpp"
 #include "CollectorLanguageInterface.hpp"
 #include "GCExtensionsBase.hpp"
-#include "ModronAssertions.h"
 #include "Heap.hpp"
-#include "AllocateDescription.hpp"
-#include "OMRVMThreadListIterator.hpp"
 #include "MemorySubSpace.hpp"
+#include "ModronAssertions.h"
+#include "OMRVMThreadListIterator.hpp"
 
 class MM_MemorySubSpace;
 class MM_MemorySpace;
@@ -191,6 +191,11 @@ void
 MM_Collector::preCollect(MM_EnvironmentBase* env, MM_MemorySubSpace* subSpace, MM_AllocateDescription* allocDescription, uint32_t gcCode)
 {
 	MM_GCExtensionsBase* extensions = env->getExtensions();
+
+	/* There might be a colliding concurrent cycle in progress, that must be completed before we start this one.
+	 * Specific Collector subclass will have exact knowledge if that is the case.
+	 */
+	completeConcurrentCycle(env);
 
 	/* Record the master GC thread CPU time at the start to diff later */
 	_masterThreadCpuTimeStart = omrthread_get_self_cpu_time(env->getOmrVMThread()->_os_thread);

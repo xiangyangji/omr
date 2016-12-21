@@ -4622,6 +4622,20 @@ MM_Scavenger::triggerConcurrentScavengerTransition(MM_EnvironmentBase *env, MM_A
 	/* For this thread too directly */
 	switchConcurrentForThread(env);
 }
+
+void
+MM_Scavenger::completeConcurrentScavenger(MM_EnvironmentBase *env)
+{
+	/* this is supposed to be called by an external cycle (for example ConcurrentGC, STW phase)
+	 * that is just to be started, but cannot before Scavenger is complete */
+	Assert_MM_true(NULL == env->_cycleState);
+	if (isConcurrentInProgress()) {
+		env->_cycleState = &_cycleState;
+		triggerConcurrentScavengerTransition(env, NULL);
+		env->_cycleState = NULL;
+	}
+}
+
 #endif /* OMR_GC_CONCURRENT_SCAVENGER */
 
 #endif /* OMR_GC_MODRON_SCAVENGER */
