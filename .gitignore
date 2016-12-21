@@ -30,13 +30,13 @@ CONFIGURE_SENTINEL_FILE
 *.sentinel
 
 # misc generated files
-gc/base/mmomrhook_internal.h
-gc/base/mmprivatehook.h
-gc/base/mmprivatehook_internal.h
-gc/doc/html
-include_core/mmomrhook.h
-include_core/omrcfg.h
-include_core/omrversionstrings.h
+#gc/base/mmomrhook_internal.h
+#gc/base/mmprivatehook.h
+#gc/base/mmprivatehook_internal.h
+#gc/doc/html
+#include_core/mmomrhook.h
+#include_core/omrcfg.h
+#include_core/omrversionstrings.h
 fvtest/algotest/hooksample.h
 fvtest/algotest/hooksample_internal.h
 #tools/toolconfigure.mk
