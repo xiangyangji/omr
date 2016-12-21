@@ -33,6 +33,8 @@
 #include "omrutilbase.h"
 #include "omrutil.h"
 
+/*zg.#undef HASHTABLE_DEBUG*/
+/*#define HASHTABLE_DEBUG*/
 #undef HASHTABLE_DEBUG
 #define HASHTABLE_ENABLE_ASSERTS
 
@@ -517,8 +519,9 @@ hashTableAdd(J9HashTable *table, void *entry)
 	void *addNode = NULL;
 	BOOLEAN growFailure = FALSE;
 	HASHTABLE_DEBUG_PORT(table->portLibrary);
-
-	hashTable_printf("hashTableAdd <%s>: table=%p entry=%p\n", table->tableName, table, entry);
+	char * name = NULL;
+	memcpy(&name,entry,8);
+	hashTable_printf("hashTableAdd <%s>: table=%p entry=%p,name=%s\n", table->tableName, table, entry,name);
 
 	if ((table->numberOfNodes + 1) == table->tableSize) {
 		if (!hashTableCanGrow(table)) {

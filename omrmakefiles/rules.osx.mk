@@ -37,7 +37,7 @@ GLOBAL_ASFLAGS+= -noexecstack -64
 ## Debugging Infomation
 # Indicate that GNU debug symbols are being used
 # TODO: this should be decided from the SPEC?
-USE_GNU_DEBUG:=1
+USE_GNU_DEBUG:=0
 
 ifeq (1,$(OMR_DEBUG))
   ifeq (1,$(USE_GNU_DEBUG))

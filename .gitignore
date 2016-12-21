@@ -160,3 +160,11 @@ VerboseGC_*.xml*
 # common development artifacts
 .*.swp
 tags
+.project
+.cproject
+.gdb_history
+.gitignore
+zgback/*
+example/*
+example/glue/*
+glue/*

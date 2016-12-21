@@ -35,10 +35,17 @@ OMR_GC_Allocate(OMR_VMThread * omrVMThread, uintptr_t allocationCategory, uintpt
 
 	omrobjectptr_t objectPtr = NULL;
 	omr_error_t retry = OMR_ERROR_RETRY;
+	int retryCount  = 0;
 	while ((NULL == objectPtr) && (retry == OMR_ERROR_RETRY)) {
 		MM_AllocateInitialization withGc(env, allocationCategory, adjustedSize, adjustedFlags);
 		if (withGc.initializeAllocateDescription(env)) {
 			objectPtr = withGc.allocateAndInitializeObject(omrVMThread);
+			if(NULL == objectPtr ){
+				retryCount++;
+				if(retryCount > 10 ){
+					break;
+				}
+			}
 			if ((NULL == objectPtr) && (NULL == env->getExtensions()->getGlobalCollector())) {
 				/* Lazily create the collector and try to allocate again. */
 				retry = OMR_GC_InitializeCollector(omrVMThread);

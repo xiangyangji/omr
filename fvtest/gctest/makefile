@@ -32,8 +32,9 @@ OBJECTS +=\
 OBJECTS := $(addsuffix $(OBJEXT),$(OBJECTS))
 
 MODULE_INCLUDES += ./configuration $(OMR_PUGIXML_DIR) $(OMR_GTEST_INCLUDES) ../util
+#$(top_srcdir)/example/glue 
 MODULE_INCLUDES += \
-  $(top_srcdir)/example/glue \
+  $(top_srcdir)/../som++/src/somrvm \
   $(OMR_IPATH) \
   $(OMRGC_IPATH)
 
