@@ -108,7 +108,7 @@ OMRTHREAD_LIB_ZOS := 0
 #zg. Trying to using the glue in som++
 #OMRGLUE ?= $(filter /%,./example/glue)$(addprefix $(top_srcdir)/,$(filter-out /%,./example/glue))
 OMRGLUE ?= $(filter /%,./../som++/src/somrvm)$(addprefix $(top_srcdir)/,$(filter-out /%,./../som++/src/somrvm))
-SOM_HEADS= $(filter /%,./../som++/src/vmobjects)$(addprefix $(top_srcdir)/,$(filter-out /%,./../som++/src/vmobjects))
+SOM_HEADS ?= $(filter /%,./../som++/src/vmobjects)$(addprefix $(top_srcdir)/,$(filter-out /%,./../som++/src/vmobjects))
 
 OMR_CROSS_COMPILE := 0
 

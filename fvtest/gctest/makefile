@@ -39,6 +39,8 @@ MODULE_INCLUDES += \
   $(OMRGC_IPATH)
 
 MODULE_CXXFLAGS += $(OMR_GTEST_CXXFLAGS) -DSPEC=$(SPEC)
+#zg add. to enable access to som++
+MODULE_LDFLAGS = -undefined dynamic_lookup
 
 vpath argmain.cpp $(top_srcdir)/fvtest/omrGtestGlue
 
