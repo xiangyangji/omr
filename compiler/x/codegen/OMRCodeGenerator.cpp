@@ -156,6 +156,8 @@ void TR_X86ProcessorInfo::initialize(TR::Compilation *comp)
             uint32_t extended_model = getCPUModel(_processorSignature) + (getCPUExtendedModel(_processorSignature) << 4);
             switch (extended_model)
                {
+               case 0x4f:
+                  _processorDescription |= TR_ProcessorIntelBroadwell; break;
                case 0x3f:
                case 0x3c:
                   _processorDescription |= TR_ProcessorIntelHaswell; break;
@@ -238,9 +240,21 @@ OMR::X86::CodeGenerator::initialize(TR::Compilation *comp)
 
    if (TR::Compiler->target.cpu.getX86SupportsTM(comp) && !comp->getOption(TR_DisableTM))
       {
-      if (TR::Compiler->target.is64Bit())
-         self()->setSupportsTM(); // disable tm on 32bits for now
-      }
+
+	 /**
+	  * Due to many verions of Haswell and a small number of Broadwell have defects for TM and then disabled by Intel, 
+	  * we will return false for any versions before Broadwell.
+	  *
+	  * TODO: Need to figure out from which mode of Broadwell start supporting TM
+	  */
+      if (!_targetProcessorInfo.isIntelHaswell())
+         {
+         if (TR::Compiler->target.is64Bit())
+            {
+            self()->setSupportsTM(); // disable tm on 32bits for now
+            }
+         }
+	  }
 
    if (!forceX87 &&
        (TR::Compiler->target.is64Bit() ||
@@ -498,17 +512,17 @@ OMR::X86::CodeGenerator::createLinkage(TR_LinkageConventions lc)
          if (TR::Compiler->target.isLinux() || TR::Compiler->target.isOSX())
             {
 #if defined(TR_TARGET_64BIT)
-            linkage = new (self()->trHeapMemory()) TR_AMD64ABILinkage(self());
+            linkage = new (self()->trHeapMemory()) TR::AMD64ABILinkage(self());
 #else
-            linkage = new (self()->trHeapMemory()) TR_IA32SystemLinkage(self());
+            linkage = new (self()->trHeapMemory()) TR::IA32SystemLinkage(self());
 #endif
             }
          else if (TR::Compiler->target.isWindows())
             {
 #if defined(TR_TARGET_64BIT)
-            linkage = new (self()->trHeapMemory()) TR_AMD64Win64FastCallLinkage(self());
+            linkage = new (self()->trHeapMemory()) TR::AMD64Win64FastCallLinkage(self());
 #else
-            linkage = new (self()->trHeapMemory()) TR_IA32SystemLinkage(self());
+            linkage = new (self()->trHeapMemory()) TR::IA32SystemLinkage(self());
 #endif
             }
          else

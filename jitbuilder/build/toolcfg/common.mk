@@ -1,3 +1,22 @@
+################################################################################
+##
+## (c) Copyright IBM Corp. 2016, 2016
+##
+##  This program and the accompanying materials are made available
+##  under the terms of the Eclipse Public License v1.0 and
+##  Apache License v2.0 which accompanies this distribution.
+##
+##      The Eclipse Public License is available at
+##      http://www.eclipse.org/legal/epl-v10.html
+##
+##      The Apache License v2.0 is available at
+##      http://www.opensource.org/licenses/apache2.0.php
+##
+## Contributors:
+##    Multiple authors (IBM Corp.) - initial implementation and documentation
+################################################################################
+
+
 J9_VERSION?=29
 
 ifdef J9SRC
@@ -21,7 +40,7 @@ PRODUCT_DEFINES+=\
     BITVECTOR_BIT_NUMBERING_MSB \
     UT_DIRECT_TRACE_REGISTRATION \
     JITTEST \
-    TEST_PROJECT_SPECIFIC
+    JITBUILDER_SPECIFIC
 
 ifdef ASSUMES
     PRODUCT_DEFINES+=PROD_WITH_ASSUMES

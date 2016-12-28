@@ -6545,7 +6545,7 @@ OMR::Z::Machine::initializeGlobalRegisterTable()
    if (!comp->getOption(TR_DisableRegisterPressureSimulation))
       {
       int32_t p = 0;
-      static char *dontInitializeGlobalRegisterTableFromLinkage = feGetEnv("TR_dontInitializeGlobalRegisterTableFromLinkage");
+      static char *dontInitializeGlobalRegisterTableFromLinkage = feGetEnv("TR::dontInitializeGlobalRegisterTableFromLinkage");
       bool enableHighWordGRA = _cg->supportsHighWordFacility() && !comp->getOption(TR_DisableHighWordRA);
       if (dontInitializeGlobalRegisterTableFromLinkage)
          {
@@ -6723,7 +6723,12 @@ OMR::Z::Machine::initializeGlobalRegisterTable()
                if (linkage->getPreserved(reg))
                   {
                      // Dangling else above
-                     if (reg != linkage->getStaticBaseRegister() &&
+                     if (reg == linkage->getExtCodeBaseRegister())
+                        {
+                        if (_cg->isExtCodeBaseFreeForAssignment())
+                           p = self()->addGlobalReg(reg, p);
+                        }
+                     else if (reg != linkage->getStaticBaseRegister() &&
                            reg != linkage->getPrivateStaticBaseRegister() &&
                            reg != linkage->getStackPointerRegister())
                         p = self()->addGlobalReg(reg, p);
@@ -6743,7 +6748,12 @@ OMR::Z::Machine::initializeGlobalRegisterTable()
                if (linkage->getPreserved(reg))
                   {
                      // Dangling else above
-                     if (reg != linkage->getLitPoolRegister() &&
+                     if (reg == linkage->getExtCodeBaseRegister())
+                        {
+                        if (_cg->isExtCodeBaseFreeForAssignment())
+                           p = self()->addGlobalReg(reg, p);
+                        }
+                     else if (reg != linkage->getLitPoolRegister() &&
                            reg != linkage->getStaticBaseRegister() &&
                            reg != linkage->getPrivateStaticBaseRegister() &&
                            reg != linkage->getStackPointerRegister())
@@ -6783,7 +6793,11 @@ OMR::Z::Machine::initializeGlobalRegisterTable()
                // might use GPR6 on 64-bit for lit pool reg
                p = self()->addGlobalReg(TR::RealRegister::HPR6, p);
                }
-            p = self()->addGlobalReg(TR::RealRegister::HPR7, p);
+            if (linkage->getExtCodeBaseRegister() == TR::RealRegister::GPR7 && _cg->isExtCodeBaseFreeForAssignment())
+               {
+               // register 7 is hard coded for now
+               p = self()->addGlobalReg(TR::RealRegister::HPR7, p);
+               }
             p = self()->addGlobalReg(TR::RealRegister::HPR8, p);
             p = self()->addGlobalReg(TR::RealRegister::HPR9, p);
             p = self()->addGlobalReg(TR::RealRegister::HPR10, p);
@@ -6925,7 +6939,7 @@ OMR::Z::Machine::initializeGlobalRegisterTable()
    self()->setLast8BitGlobalGPRRegisterNumber(25);    // Index of last global 8bit Reg
 
    // additional (forced) restricted regs.
-   // Similar code in TR_S390PrivateLinkage::initS390RealRegisterLinkage() for RA
+   // Similar code in TR::S390PrivateLinkage::initS390RealRegisterLinkage() for RA
 
    for (int32_t i = self()->getFirstGlobalGPRRegisterNumber(); i < self()->getLastGlobalGPRRegisterNumber(); ++i)
       {

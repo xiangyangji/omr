@@ -22,7 +22,9 @@ CXXFLAGS=-g -std=c++0x -O2 -c -fno-rtti -fPIC -I./include/compiler -I./include
 
 .SUFFIXES: .cpp .o
 
-# NOTE: replay purposefully left out of the list
+# NOTE: replay purposefully left out of these lists
+
+# These tests may not work on all platforms
 ALL_TESTS = \
             call \
             conststring \
@@ -40,29 +42,49 @@ ALL_TESTS = \
             simple \
             structarray \
             switch \
-            toiltype
+            thunks \
+            toiltype \
+            worklist
 
-goal: $(ALL_TESTS)
-	./call
-	./conststring
+# Compile all the tests by default
+all: $(ALL_TESTS)
+
+# These tests should run properly on all platforms
+common_goal: $(ALL_TESTS)
 	./controlflowtests
-	./dotproduct
 	./issupportedtype
 	./iterfib
+	./nestedloop
+	./pow2
+	./simple
+	./toiltype
+	./worklist
+
+# Additional tests that may not work properly on all platforms
+all_goal: common_goal
+	./call
+	./conststring
+	./dotproduct
 	./linkedlist
 	./localarray
-	./nestedloop
+	./operandstacktests
 	./pointer
-	./pow2
 	./recfib
-	./simple
 	./structarray
 	./switch
+	./thunks
 	./toiltype
+	./transactionaloperations
 
-all: goal
 
-test: goal $(ALL_TESTS)
+# In general, only compile and run tests that are known to work on all platforms
+test: common_goal all
+
+# For platforms where everything can run:
+testall: all_goal all
+
+
+# Rules for individual examples
 
 atomicoperations : libjitbuilder.a AtomicOperations.o
 	g++ -g -fno-rtti -o $@ AtomicOperations.o -L. -ljitbuilder -ldl
@@ -222,6 +244,24 @@ toiltype : libjitbuilder.a ToIlType.o
 ToIlType.o: src/ToIlType.cpp
 	g++ -o $@ $(CXXFLAGS) $<
 
+transactionaloperations : libjitbuilder.a TransactionalOperations.o
+	g++ -g -fno-rtti -o $@ TransactionalOperations.o -L. -ljitbuilder -ldl
+
+TransactionalOperations.o: src/TransactionalOperations.cpp src/TransactionalOperations.hpp
+	g++ -o $@ $(CXXFLAGS) $<
+
+worklist : libjitbuilder.a Worklist.o
+	g++ -g -fno-rtti -o $@ Worklist.o -L. -ljitbuilder -ldl
+
+Worklist.o: src/Worklist.cpp
+	g++ -o $@ $(CXXFLAGS) $<
+
+
+thunks : libjitbuilder.a Thunk.o
+	g++ -g -fno-rtti -o $@ Thunk.o -L. -ljitbuilder -ldl
+
+Thunk.o: src/Thunk.cpp
+	g++ -o $@ $(CXXFLAGS) $<
 
 
 clean:
